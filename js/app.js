@@ -1,7 +1,10 @@
 const NAV_NAME = document.getElementById("navbar__list");
+const HIDE_H = -13;
+let hide_x = HIDE_H;
 let count = 0; // used to count the sections in the HTML
 let section_i; // used to handle the section element
 let sections_y = Array; // used to collect all sections positions
+
 sections_y[0] = document.getElementsByTagName("h1")[0].offsetTop;
 
 // check all sections in the HTML and add them in navigation bar
@@ -22,6 +25,30 @@ sections_y[count+1] = document.getElementsByTagName("footer")[0].offsetTop;
 
 let span_item = document.getElementsByTagName('span'); // used to have a list of all spans
 
+function show_frame() {
+    let id = setInterval(s_frame, 10);
+    function s_frame() {
+        if (hide_x == 0) {
+            clearInterval(id);
+        } else {
+            hide_x++;
+            document.getElementsByClassName('page__header')[0].style.top = `${hide_x}vh`;
+        }
+    }
+}
+
+function hide_frame() {
+    let id = setInterval(s_frame, 10);
+    function s_frame() {
+        if (hide_x == HIDE_H) {
+            clearInterval(id);
+        } else {
+            hide_x--;
+            document.getElementsByClassName('page__header')[0].style.top = `${hide_x}vh`;
+        }
+    }
+}
+
 // highlight the navbar related to current section
 window.onscroll = function() {
     for (i=1;i<=count;i++){
@@ -34,13 +61,17 @@ window.onscroll = function() {
             span_item[i-1].classList.remove("reached__section");
         }
     }
-    document.getElementsByClassName('page__header')[0].style.top="0";
+    show_frame();
 }
 
 // keep tracking of scrolling the window
-let prevScrollpos = 1000;
+let prevScrollpos = window.pageYOffset;
 function timing() {
-    prevScrollpos === window.pageYOffset ? document.getElementsByClassName('page__header')[0].style.top="-10vh" : document.getElementsByClassName('page__header')[0].style.top="0";
+    if(prevScrollpos === window.pageYOffset) {
+        hide_frame();
+    } else {
+        show_frame();
+    }
     prevScrollpos = window.pageYOffset;
 }
 setInterval(timing,2000);
